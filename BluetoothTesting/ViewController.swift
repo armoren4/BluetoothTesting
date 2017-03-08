@@ -15,9 +15,12 @@ class ViewController: UIViewController, PTDBeanManagerDelegate, PTDBeanDelegate 
     var beanManager: PTDBeanManager?
     var yourBean: PTDBean?
     var lightState: Bool = false
+    var randomNumber = Int(arc4random_uniform(30))
     
     // MARK: Properties
     @IBOutlet weak var ledTextLabel: UILabel!
+    
+    @IBOutlet weak var randomNumberLabel: UILabel!
 
     // After view is loaded into memory, we create an instance of PTDBeanManager
     // and assign ourselves as the delegate
@@ -75,7 +78,7 @@ class ViewController: UIViewController, PTDBeanManagerDelegate, PTDBeanDelegate 
         beanManager?.connect(to: yourBean, withOptions:nil, error: &error)
         yourBean?.delegate = self    }
     
-    // Bean SDK: Send serial datat to the Bean
+    // Bean SDK: Send serial data to the Bean
     func sendSerialData(beanState: NSData) {
         yourBean?.sendSerialData(beanState as Data!)
     }
@@ -86,6 +89,10 @@ class ViewController: UIViewController, PTDBeanManagerDelegate, PTDBeanDelegate 
         ledTextLabel.text = "Led is: \(onOffText)"
     }
     
+    func updateRandomNumberText(lightState: Bool) {
+        print(randomNumber)
+           }
+    
     // Mark: Actions
     // When we pressed the button, we change the light state and
     // We update date the label, and send the Bean serial data
@@ -94,6 +101,14 @@ class ViewController: UIViewController, PTDBeanManagerDelegate, PTDBeanDelegate 
         updateLedStatusText(lightState: lightState)
         let data = NSData(bytes: &lightState, length: MemoryLayout<Bool>.size)
         sendSerialData(beanState: data)
+
+            while randomNumber > 5 {
+                randomNumberLabel.text = "Random Number: \(randomNumber)"
+                
+                print(randomNumber)
+                sleep(1)
+                 randomNumber = Int(arc4random_uniform(30))
+            }
         
         if ledTextLabel.text == nil {
             ledTextLabel.text = "Led is: OFF"
